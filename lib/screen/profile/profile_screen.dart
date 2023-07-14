@@ -19,6 +19,7 @@ class ProfileUserScreenU extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('-------------------->$obs');
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: ColorRes.backgroundColor,
@@ -82,7 +83,10 @@ class ProfileUserScreenU extends StatelessWidget {
                             GetBuilder<ProfileUserController>(
                               id: "pic",
                               builder: (context) {
-                                final imageUrl = controller.fbImageUrl.value;
+                                // final imageUrl = controller.fbImageUrl.value;
+                                final String imageUrl = controller.url;
+                                print(
+                                    '-------------------->          h$imageUrl');
                                 return Container(
                                   width: 100,
                                   height: 100,
@@ -171,18 +175,19 @@ class ProfileUserScreenU extends StatelessWidget {
                             height: 10,
                           ),
                           commonTextFormField(
-                              onChanged: controller.onChanged,
-                              readOnly: true,
-                              textDecoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                border: InputBorder.none,
-                                hintText: "  Full Name",
-                                hintStyle: appTextStyle(
-                                  fontSize: 14,
-                                  color: ColorRes.black.withOpacity(0.15),
-                                ),
+                            onChanged: controller.onChanged,
+                            readOnly: true,
+                            textDecoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(15),
+                              border: InputBorder.none,
+                              hintText: "  Full Name",
+                              hintStyle: appTextStyle(
+                                fontSize: 14,
+                                color: ColorRes.black.withOpacity(0.15),
                               ),
-                              controller: controller.fullNameController),
+                            ),
+                            controller: controller.fullNameController,
+                          ),
                           controller.isNameValidate.value == true
                               ? Column(
                                   children: [

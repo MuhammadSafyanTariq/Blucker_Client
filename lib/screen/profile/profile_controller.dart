@@ -47,6 +47,7 @@ class ProfileUserController extends GetxController implements GetxService {
     dateOfBirthController.text = PrefService.getString(PrefKeys.dateOfBirth);
     addressController.text = PrefService.getString(PrefKeys.address);
     image = File(PrefService.getString(PrefKeys.imageId));
+    print('--------------------------------------------------ooooooooooooo-');
     getFbImgUrl();
     super.onInit();
   }
@@ -88,7 +89,7 @@ class ProfileUserController extends GetxController implements GetxService {
     }
   }
 
-  init() {
+  init() async {
     isLod.value = true;
     final docRef = fireStore
         .collection("Auth")
@@ -97,25 +98,19 @@ class ProfileUserController extends GetxController implements GetxService {
         .doc(PrefService.getString(PrefKeys.userId))
         .collection("company")
         .doc("details");
-    docRef.get().then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        fullNameController.text = data["name"];
-        emailController.text = data["email"];
-        addressController.text = data["address"];
-        occupationController.text = data["date"];
-        dateOfBirthController.text = data["country"];
-        update();
-        isLod.value = false;
-      },
-      onError: (e) {
-        Get.snackbar("Error getting document:", "$e",
-            colorText: const Color(0xffDA1414));
-        if (kDebugMode) {
-          print("Error getting document: $e");
-        }
-      },
-    );
+    DocumentSnapshot doc = await docRef.get();
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>;
+      fullNameController.text = data["name"];
+      emailController.text = data["email"];
+      addressController.text = data["address"];
+      occupationController.text = data["date"];
+      dateOfBirthController.text = data["country"];
+      url = data["imageUrl"]; // Fetch the imageUrl field from Firestore
+      print('-----------------------------------oooooooooooo------');
+      update();
+    }
+    isLod.value = false;
   }
 
   // ignore: non_constant_identifier_names
