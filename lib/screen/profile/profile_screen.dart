@@ -13,9 +13,20 @@ import 'package:blukers_client_app/utils/color_res.dart';
 import 'package:blukers_client_app/utils/pref_keys.dart';
 import 'package:blukers_client_app/utils/string.dart';
 
-class ProfileUserScreenU extends StatelessWidget {
+class ProfileUserScreenU extends StatefulWidget {
   ProfileUserScreenU({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileUserScreenU> createState() => _ProfileUserScreenUState();
+}
+
+class _ProfileUserScreenUState extends State<ProfileUserScreenU> {
   final controller = Get.put(ProfileUserController());
+  @override
+  void initState() {
+    super.initState();
+    print('sssssssssssssssssssssssssssssssss');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +95,20 @@ class ProfileUserScreenU extends StatelessWidget {
                               id: "pic",
                               builder: (context) {
                                 // final imageUrl = controller.fbImageUrl.value;
-                                final String imageUrl = controller.url;
+                                final String imageUrl =
+                                    controller.imageUrlController.text;
                                 print(
-                                    '-------------------->          h$imageUrl');
+                                    'data------------------>${controller.fullNameController.text}');
+                                print(
+                                    'data------------------>${controller.emailController.text}');
+                                print(
+                                    'data------------------>${controller.dateOfBirthController.text}');
+                                print(
+                                    'data------------------>${controller.addressController.text}');
+                                print(
+                                    'data------------------>${controller.occupationController.text}');
+                                print(
+                                    'data------------------>${controller.imageUrlController.text}');
                                 return Container(
                                   width: 100,
                                   height: 100,

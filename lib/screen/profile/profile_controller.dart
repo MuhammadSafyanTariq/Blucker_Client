@@ -21,6 +21,7 @@ class ProfileUserController extends GetxController implements GetxService {
   TextEditingController addressController = TextEditingController();
   TextEditingController occupationController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
   RxBool isNameValidate = false.obs;
   RxBool isEmailValidate = false.obs;
   RxBool isAddressValidate = false.obs;
@@ -46,8 +47,8 @@ class ProfileUserController extends GetxController implements GetxService {
     occupationController.text = PrefService.getString(PrefKeys.occupation);
     dateOfBirthController.text = PrefService.getString(PrefKeys.dateOfBirth);
     addressController.text = PrefService.getString(PrefKeys.address);
+    imageUrlController.text = PrefService.getString(PrefKeys.imageId);
     image = File(PrefService.getString(PrefKeys.imageId));
-    print('--------------------------------------------------ooooooooooooo-');
     getFbImgUrl();
     super.onInit();
   }
@@ -101,12 +102,13 @@ class ProfileUserController extends GetxController implements GetxService {
     DocumentSnapshot doc = await docRef.get();
     if (doc.exists) {
       final data = doc.data() as Map<String, dynamic>;
-      fullNameController.text = data["name"];
-      emailController.text = data["email"];
-      addressController.text = data["address"];
-      occupationController.text = data["date"];
-      dateOfBirthController.text = data["country"];
-      url = data["imageUrl"]; // Fetch the imageUrl field from Firestore
+      fullNameController.text = data["fullName"];
+      emailController.text = data["Email"];
+      addressController.text = data["Address"];
+      occupationController.text = data["Dob"];
+      dateOfBirthController.text = data["Country"];
+      imageUrlController.text =
+          data["imageUrl"]; // Fetch the imageUrl field from Firestore
       print('-----------------------------------oooooooooooo------');
       update();
     }
@@ -135,12 +137,12 @@ class ProfileUserController extends GetxController implements GetxService {
         "fullName": fullNameController.text,
         "Dob": dateOfBirthController.text,
         "Address": addressController.text,
-        "imageUrl": url,
+        "imageUrl": imageUrlController.text,
       };
 
       PrefService.setValue(
         PrefKeys.imageId,
-        url,
+        imageUrlController.text,
       );
       PrefService.setValue(
         PrefKeys.fullName,
@@ -220,30 +222,31 @@ class ProfileUserController extends GetxController implements GetxService {
     }
   }
 
-  ontap() async {
-    XFile? img = await picker.pickImage(source: ImageSource.camera);
-    if (img != null) {
-      Uint8List imageData = await img.readAsBytes();
-      String imageUrl =
-          await uploadImageToStorage('profile_images', imageData, true);
-      if (imageUrl.isNotEmpty) {
-        url = imageUrl;
-        update();
-      }
+  pickImage(ImageSource source) async {
+    final ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      return await file.readAsBytes();
     }
   }
 
+  ontap() async {
+    // XFile? img = await picker.pickImage(source: ImageSource.camera);
+    Uint8List img = await pickImage(ImageSource.camera);
+
+    String imageUrl = await uploadImageToStorage('profile_images', img, true);
+    print('img----------------------------------------->$imageUrl');
+    imageUrlController.text = imageUrl;
+    update();
+  }
+
   ontapGallery() async {
-    XFile? gallery = await picker.pickImage(source: ImageSource.gallery);
-    if (gallery != null) {
-      Uint8List imageData = await gallery.readAsBytes();
-      String imageUrl =
-          await uploadImageToStorage('profile_images', imageData, true);
-      if (imageUrl.isNotEmpty) {
-        url = imageUrl;
-        update();
-      }
-    }
+    Uint8List img = await pickImage(ImageSource.gallery);
+
+    String imageUrl = await uploadImageToStorage('profile_images', img, true);
+    print('img----------------------------------------->$imageUrl');
+    imageUrlController.text = imageUrl;
+    update();
     Get.back();
   }
 
@@ -259,8 +262,7 @@ class StorageMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<String> uploadImagetoStorage(
       String childName, Uint8List file, bool isPost) async {
-    Reference ref =
-        _storage.ref().child(childName).child(_auth.currentUser!.uid);
+    Reference ref = _storage.ref().child(_auth.currentUser!.uid);
     if (isPost) {
       String id = const Uuid().v1();
       ref = ref.child(id);
