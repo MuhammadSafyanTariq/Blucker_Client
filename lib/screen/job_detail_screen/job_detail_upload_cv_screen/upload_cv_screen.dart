@@ -56,7 +56,9 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                             color: ColorRes.white),
                         child: Row(
                           children: [
-                            Image.asset(AssetRes.airBnbLogo),
+                            Image.network(
+                              args["doc"]["imageUrl"],
+                            ),
                             const SizedBox(width: 20),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,

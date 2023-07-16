@@ -4,15 +4,15 @@ import 'package:get/get.dart';
 import 'package:blukers_client_app/screen/chat_box/chat_box_screen.dart';
 import 'package:blukers_client_app/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:blukers_client_app/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
-import 'package:blukers_client_app/screen/manager_section/call/video_joinig_screen.dart';
 import 'package:blukers_client_app/screen/manager_section/manager_home_screen/manager_home_screen_controller.dart';
 import 'package:blukers_client_app/service/pref_services.dart';
 import 'package:blukers_client_app/utils/app_res.dart';
 import 'package:blukers_client_app/utils/app_style.dart';
-import 'package:blukers_client_app/utils/asset_res.dart';
 import 'package:blukers_client_app/utils/color_res.dart';
 import 'package:blukers_client_app/utils/pref_keys.dart';
 import 'package:blukers_client_app/utils/string.dart';
+
+import '../../../../utils/asset_res.dart';
 
 Widget recentPeopleBox({bool? homeScreen, String? position}) {
   final contro = Get.put(ManagerHomeScreenController());
@@ -110,9 +110,11 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
                                           height: 20,
                                         ),*/
                                         child: (create.url == "")
-                                            ? const Image(
-                                                image: AssetImage(
-                                                    AssetRes.detailsImage),
+                                            ? Image(
+                                                image: NetworkImage(
+                                                  // AssetRes.detailsImage,
+                                                  "${contro.userData[i]['imageUrl']}", /////HAVE TO CHANGE THIS
+                                                ),
                                                 height: 100,
                                               )
                                             : Image(

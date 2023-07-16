@@ -14,6 +14,7 @@ import 'package:blukers_client_app/utils/pref_keys.dart';
 
 Widget allJobs(Stream stream, {bool? seeAll = false}) {
   final HomeController controller = HomeController();
+
   CreateVacanciesController create = Get.put(CreateVacanciesController());
 
   //final jrController = Get.put(JobRecommendationController());
@@ -39,6 +40,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                           .toLowerCase()
                           .contains(
                               jrController.searchText.value.toLowerCase()) ||
+                      element.get('imageUrl').toString().toLowerCase().contains(
+                          jrController.searchText.value.toLowerCase()) ||
                       element
                           .get('CompanyName')
                           .toString()
@@ -60,6 +63,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
+                        print(
+                            'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss${jrController.documents[jrController.documents.length - 1 - index]["imageUrl"]}');
                         if (kDebugMode) {
                           print([jrController.documents.length - 1 - index]);
                         }
@@ -101,16 +106,15 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                       color: ColorRes.white),
                                   child: Row(
                                     children: [
-                                      (create.url == "")
-                                          ? const Image(
-                                              image: AssetImage(
-                                                  AssetRes.airBnbLogo),
-                                              height: 100,
-                                            )
-                                          : Image(
-                                              image: NetworkImage(create.url),
-                                              height: 100,
-                                            ),
+                                      Image(
+                                        image: NetworkImage(
+                                          jrController.documents[
+                                              jrController.documents.length -
+                                                  1 -
+                                                  index]["imageUrl"],
+                                        ),
+                                        height: 100,
+                                      ),
                                       /*  Image.asset(
                                           controller.jobTypesLogo[index % 5]),*/
                                       const SizedBox(width: 20),
@@ -141,7 +145,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                                 fontWeight: FontWeight.w400),
                                           ),
                                           Text(
-                                            "${jrController.documents[jrController.documents.length - 1 - index]["location"]} "
+                                            // "${jrController.documents[jrController.documents.length - 1 - index]["location"]} "
                                             " ${jrController.documents[jrController.documents.length - 1 - index]["type"]}",
                                             style: appTextStyle(
                                                 color: ColorRes.black,

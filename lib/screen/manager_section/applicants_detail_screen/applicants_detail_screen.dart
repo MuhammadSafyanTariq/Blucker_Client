@@ -121,8 +121,10 @@ class ApplicantsDetailScreen extends StatelessWidget {
                                       color: ColorRes.black,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Image(
-                                      image: AssetImage(AssetRes.detailsImage),
+                                    child: Image(
+                                      image: NetworkImage(
+                                        args['imageUrl'],
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(

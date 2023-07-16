@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:blukers_client_app/common/widgets/back_button.dart';
@@ -21,16 +23,34 @@ class ProfileUserScreenU extends StatefulWidget {
 }
 
 class _ProfileUserScreenUState extends State<ProfileUserScreenU> {
-  final controller = Get.put(ProfileUserController());
+  final controller = Get.put(
+    ProfileUserController(),
+  );
+  var imgUrl = "";
+
   @override
   void initState() {
     super.initState();
-    print('sssssssssssssssssssssssssssssssss');
+    getImgUrl();
+  }
+
+  void getImgUrl() async {
+    final CollectionReference collection = FirebaseFirestore.instance
+        .collection("Auth")
+        .doc("User")
+        .collection("register");
+
+    DocumentSnapshot snapshot =
+        await collection.doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (mounted) {
+      setState(() {
+        imgUrl = snapshot.get('imageUrl');
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('-------------------->$obs');
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: ColorRes.backgroundColor,
@@ -94,30 +114,37 @@ class _ProfileUserScreenUState extends State<ProfileUserScreenU> {
                             GetBuilder<ProfileUserController>(
                               id: "pic",
                               builder: (context) {
-                                // final imageUrl = controller.fbImageUrl.value;
-                                final String imageUrl =
-                                    controller.imageUrlController.text;
-                                print(
-                                    'data------------------>${controller.fullNameController.text}');
-                                print(
-                                    'data------------------>${controller.emailController.text}');
-                                print(
-                                    'data------------------>${controller.dateOfBirthController.text}');
-                                print(
-                                    'data------------------>${controller.addressController.text}');
-                                print(
-                                    'data------------------>${controller.occupationController.text}');
-                                print(
-                                    'data------------------>${controller.imageUrlController.text}');
+                                // final CollectionReference collection =
+                                // FirebaseFirestore.instance.collection("Auth")
+                                // .doc("User")
+                                // .collection("register");
+
+                                // DocumentSnapshot snapshot = await collection.doc(PrefService.getString(PrefKeys.userId)).get();
+                                //String     fieldValue = snapshot.get('imageUrl') as String?;
+
+                                // var img = FirebaseFirestore.instance
+                                //     .collection("Auth")
+                                //     .doc("User")
+                                //     .collection("register")
+                                //     .doc(PrefService.getString(PrefKeys.userId))
+                                //     .get();
+
+                                // var imgUrl = img.get('image') as String?;
+                                getImgUrl();
+
+                                print(imgUrl);
+                                // print(
+                                //     'imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$imgUrl');
+
                                 return Container(
                                   width: 100,
                                   height: 100,
                                   decoration: BoxDecoration(
                                     color: ColorRes.black,
                                     borderRadius: BorderRadius.circular(50),
-                                    image: imageUrl.isNotEmpty
+                                    image: imgUrl.isNotEmpty
                                         ? DecorationImage(
-                                            image: NetworkImage(imageUrl),
+                                            image: NetworkImage(imgUrl),
                                             fit: BoxFit.fill,
                                           )
                                         : (controller.image != null)

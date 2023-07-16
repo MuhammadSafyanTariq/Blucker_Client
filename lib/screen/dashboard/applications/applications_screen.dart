@@ -49,6 +49,7 @@ class ApplicationsScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Text(
                         Strings.applications,
+                        // 'hhhhhhhhhhhhhhhhhh',
                         style: appTextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,

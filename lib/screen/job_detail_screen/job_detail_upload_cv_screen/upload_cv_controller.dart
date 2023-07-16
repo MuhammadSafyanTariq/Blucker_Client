@@ -18,8 +18,25 @@ class JobDetailsUploadCvController extends GetxController {
   RefreshController refreshController = RefreshController();
 
   init() async {
-    companyList = [];
+    var imgUrl;
+    void getImgUrl() async {
+      final CollectionReference collection = FirebaseFirestore.instance
+          .collection("Auth")
+          .doc("Manager")
+          .collection("register");
 
+      DocumentSnapshot snapshot = await collection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('company')
+          .doc('details')
+          .get();
+      imgUrl = snapshot.get('imageUrl');
+    }
+
+    companyList = [];
+    print('----------------------------------------------->$imgUrl');
+    print(
+        '----------------------------------------------->${PrefService.getString(PrefKeys.imageId)}');
     await firestore.collection("Apply").get().then((value) {
       // ignore: avoid_function_literals_in_foreach_calls
       value.docs.forEach((element) {
@@ -87,6 +104,7 @@ class JobDetailsUploadCvController extends GetxController {
       'location': args['location'],
       'type': args['type'],
       "deviceToken": PrefService.getString(PrefKeys.deviceToken),
+      "imageUrl": PrefService.getString(PrefKeys.imageId),
     });
 
     Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [

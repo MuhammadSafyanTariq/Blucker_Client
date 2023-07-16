@@ -135,6 +135,7 @@ class SignInScreenController extends GetxController {
             PrefService.setValue(PrefKeys.country, value.docs[i]["Country"]);
             PrefService.setValue(
                 PrefKeys.occupation, value.docs[i]["Occupation"]);
+            PrefService.setValue(PrefKeys.imageId, value.docs[i]["imageUrl"]);
 
             break;
           } else {

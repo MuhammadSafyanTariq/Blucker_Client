@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:blukers_client_app/common/widgets/back_button.dart';
@@ -10,9 +12,37 @@ import 'package:blukers_client_app/utils/asset_res.dart';
 import 'package:blukers_client_app/utils/color_res.dart';
 import 'package:blukers_client_app/utils/pref_keys.dart';
 
-class EditProfileUser extends StatelessWidget {
+class EditProfileUser extends StatefulWidget {
   EditProfileUser({Key? key}) : super(key: key);
+
+  @override
+  State<EditProfileUser> createState() => _EditProfileUserState();
+}
+
+class _EditProfileUserState extends State<EditProfileUser> {
   final controller = Get.put(ProfileUserController());
+  var imgUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getImgUrl();
+  }
+
+  void getImgUrl() async {
+    final CollectionReference collection = FirebaseFirestore.instance
+        .collection("Auth")
+        .doc("User")
+        .collection("register");
+
+    DocumentSnapshot snapshot =
+        await collection.doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (mounted) {
+      setState(() {
+        imgUrl = snapshot.get('imageUrl');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,31 +95,54 @@ class EditProfileUser extends StatelessWidget {
                       Stack(
                         children: [
                           GetBuilder<ProfileUserController>(
-                              id: "pic",
-                              builder: (context) {
-                                return Container(
-                                  width: 100,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    color: ColorRes.black,
-                                    borderRadius: BorderRadius.circular(50),
-                                    image: controller.fbImageUrl.value != ""
-                                        ? DecorationImage(
-                                            image: NetworkImage(
-                                                controller.fbImageUrl.value),
-                                            fit: BoxFit.fill)
-                                        : (controller.image != null)
-                                            ? DecorationImage(
-                                                image: FileImage(
-                                                    controller.image!),
-                                              )
-                                            : const DecorationImage(
-                                                image: AssetImage(
-                                                    AssetRes.userprofileLogo),
-                                              ),
-                                  ),
-                                );
-                              }),
+                            id: "pic",
+                            builder: (context) {
+                              // final CollectionReference collection =
+                              // FirebaseFirestore.instance.collection("Auth")
+                              // .doc("User")
+                              // .collection("register");
+
+                              // DocumentSnapshot snapshot = await collection.doc(PrefService.getString(PrefKeys.userId)).get();
+                              //String     fieldValue = snapshot.get('imageUrl') as String?;
+
+                              // var img = FirebaseFirestore.instance
+                              //     .collection("Auth")
+                              //     .doc("User")
+                              //     .collection("register")
+                              //     .doc(PrefService.getString(PrefKeys.userId))
+                              //     .get();
+
+                              // var imgUrl = img.get('image') as String?;
+                              getImgUrl();
+
+                              print(imgUrl);
+                              // print(
+                              //     'imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$imgUrl');
+
+                              return Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: ColorRes.black,
+                                  borderRadius: BorderRadius.circular(50),
+                                  image: imgUrl.isNotEmpty
+                                      ? DecorationImage(
+                                          image: NetworkImage(imgUrl),
+                                          fit: BoxFit.fill,
+                                        )
+                                      : (controller.image != null)
+                                          ? DecorationImage(
+                                              image:
+                                                  FileImage(controller.image!),
+                                            )
+                                          : const DecorationImage(
+                                              image: AssetImage(
+                                                  AssetRes.userprofileLogo),
+                                            ),
+                                ),
+                              );
+                            },
+                          ),
                           Positioned(
                             bottom: 0,
                             right: 2,
