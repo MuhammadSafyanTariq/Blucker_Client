@@ -200,12 +200,15 @@ class ManagerApplicationScreen extends StatelessWidget {
                     controller.documentData =
                         controller.documentData.where((element) {
                       if (kDebugMode) {
-                        print(element
-                            .get("Position")
-                            .toString()
-                            .toLowerCase()
-                            .contains(controller.searchController.text
-                                .toLowerCase()));
+                        print(
+                          element
+                              .get("Position")
+                              .toString()
+                              .toLowerCase()
+                              .contains(
+                                controller.searchController.text.toLowerCase(),
+                              ),
+                        );
                       }
                       return element
                           .get("Position")
@@ -657,8 +660,8 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                           Row(
                                                                         children: [
                                                                           Image
-                                                                              .asset(
-                                                                            AssetRes.airBnbLogo,
+                                                                              .network(
+                                                                            controller.documentData[index]["imageUrl"], //here we have to make change---------------------------------------------------------------------------------
                                                                             height:
                                                                                 62,
                                                                             width:

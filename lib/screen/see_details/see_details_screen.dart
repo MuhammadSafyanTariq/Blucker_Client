@@ -46,8 +46,8 @@ class SeeDetailsScreen extends StatelessWidget {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      image: const DecorationImage(
-                        image: AssetImage(AssetRes.detailsImage),
+                      image: DecorationImage(
+                        image: NetworkImage(args['imageUrl']),
                       ),
                     ),
                   ),

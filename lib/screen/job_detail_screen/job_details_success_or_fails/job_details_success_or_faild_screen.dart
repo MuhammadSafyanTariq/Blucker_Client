@@ -55,7 +55,9 @@ class JobDetailsSuccessOrFailedScreen extends StatelessWidget {
                             color: ColorRes.white),
                         child: Row(
                           children: [
-                            Image.asset(AssetRes.airBnbLogo),
+                            Image.network(
+                              args[0]['doc']['imageUrl'],
+                            ),
                             const SizedBox(width: 20),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,

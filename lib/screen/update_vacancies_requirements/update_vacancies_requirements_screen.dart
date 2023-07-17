@@ -189,9 +189,9 @@ class UpdateVacanciesRequirementsScreen extends StatelessWidget {
                                   child: Column(children: [
                                     Stack(
                                       children: [
-                                        const Image(
-                                          image:
-                                              AssetImage(AssetRes.airBnbLogo),
+                                        Image(
+                                          image: NetworkImage(controller
+                                              .imageUrlController.text),
                                           height: 70,
                                         ),
                                         Positioned(

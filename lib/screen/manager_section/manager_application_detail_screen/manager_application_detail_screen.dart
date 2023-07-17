@@ -63,7 +63,7 @@ class ManagerApplicationDetailScreen extends StatelessWidget {
                     color: ColorRes.white),
                 child: Row(
                   children: [
-                    Image.asset(AssetRes.airBnbLogo),
+                    Image.network(args["docs"]["imageUrl"]),
                     const SizedBox(width: 20),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -52,6 +52,7 @@ class UpdateVacanciesRequirementController extends GetxController {
   TextEditingController typeController = TextEditingController();
   TextEditingController statusController = TextEditingController();
   TextEditingController requirementController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
   List requirmentList = [];
   List<TextEditingController> addRequirementsList = [];
 
@@ -78,6 +79,7 @@ class UpdateVacanciesRequirementController extends GetxController {
         "location": locationController.text.trim(),
         "type": typeController.text.trim(),
         "Status": statusController.text.trim(),
+        "imageUrl": imageUrlController.text,
         "BookMarkUserList": [],
       };
 
@@ -107,6 +109,7 @@ class UpdateVacanciesRequirementController extends GetxController {
     locationController.text = data['docs']["location"];
     typeController.text = data['docs']["type"];
     statusController.text = data['docs']["Status"];
+    imageUrlController.text = data['docs']["imageUrl"];
     requirmentList = data['docs']['RequirementsList'];
     DocumentSnapshot document = await FirebaseFirestore.instance
         .collection("allPost")

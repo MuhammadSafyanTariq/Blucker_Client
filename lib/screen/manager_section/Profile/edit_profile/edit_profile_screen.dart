@@ -9,11 +9,44 @@ import 'package:blukers_client_app/utils/app_style.dart';
 import 'package:blukers_client_app/utils/asset_res.dart';
 import 'package:blukers_client_app/utils/color_res.dart';
 import 'package:blukers_client_app/utils/string.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // ignore: must_be_immutable
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   EditProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final controller = Get.put(ProfileController());
+  var imgUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getImgUrl();
+  }
+
+  void getImgUrl() async {
+    final CollectionReference collection = FirebaseFirestore.instance
+        .collection("Auth")
+        .doc("Manager")
+        .collection("register");
+
+    DocumentSnapshot snapshot = await collection
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('company')
+        .doc('details')
+        .get();
+    if (mounted) {
+      setState(() {
+        imgUrl = snapshot.get('imageUrl');
+      });
+    }
+  }
 
   CreateVacanciesController getCreate = Get.put(CreateVacanciesController());
 
@@ -82,30 +115,54 @@ class EditProfileScreen extends StatelessWidget {
                       Stack(
                         children: [
                           GetBuilder<ProfileController>(
-                              id: "image",
-                              builder: (context) {
-                                return Container(
-                                  width: 90,
-                                  height: 90,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: (getCreate.url == "")
-                                        ? DecorationImage(
-                                            image: const AssetImage(
-                                              AssetRes.roundAirbnb,
+                            id: "image",
+                            builder: (context) {
+                              // final CollectionReference collection =
+                              // FirebaseFirestore.instance.collection("Auth")
+                              // .doc("User")
+                              // .collection("register");
+
+                              // DocumentSnapshot snapshot = await collection.doc(PrefService.getString(PrefKeys.userId)).get();
+                              //String     fieldValue = snapshot.get('imageUrl') as String?;
+
+                              // var img = FirebaseFirestore.instance
+                              //     .collection("Auth")
+                              //     .doc("User")
+                              //     .collection("register")
+                              //     .doc(PrefService.getString(PrefKeys.userId))
+                              //     .get();
+
+                              // var imgUrl = img.get('image') as String?;
+                              getImgUrl();
+
+                              print(imgUrl);
+                              // print(
+                              //     'imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee$imgUrl');
+
+                              return Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: ColorRes.black,
+                                  borderRadius: BorderRadius.circular(50),
+                                  image: imgUrl.isNotEmpty
+                                      ? DecorationImage(
+                                          image: NetworkImage(imgUrl),
+                                          fit: BoxFit.fill,
+                                        )
+                                      : (controller.image != null)
+                                          ? DecorationImage(
+                                              image:
+                                                  FileImage(controller.image!),
+                                            )
+                                          : const DecorationImage(
+                                              image: AssetImage(
+                                                  AssetRes.userprofileLogo),
                                             ),
-                                            fit: BoxFit.fill,
-                                            onError: (error, starcase) {
-                                              Image.asset(AssetRes.userImage);
-                                            })
-                                        : DecorationImage(
-                                            image: NetworkImage(
-                                              getCreate.url,
-                                            ),
-                                            fit: BoxFit.fill),
-                                  ),
-                                );
-                              }),
+                                ),
+                              );
+                            },
+                          ),
                           Positioned(
                             bottom: 0,
                             right: 10,
